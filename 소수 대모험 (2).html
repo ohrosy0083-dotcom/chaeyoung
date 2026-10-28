@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>소수 대모험 - 몬스터를 물리쳐라!</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--ink:#2a1a68;--sun:#ffd23f;--coral:#ff5d73;--mint:#27d3a2;--grape:#9b7bff;--sky:#5cc8ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#fff;background:linear-gradient(160deg,#2a1a68,#143a7b);background-attachment:fixed}
+.wrap{max-width:560px;margin:0 auto;padding:14px}
+h1{font-size:clamp(40px,12vw,60px);margin:8px 0 0;color:var(--sun);text-align:center;line-height:1.05;text-shadow:0 4px 0 #ff5d73,0 8px 0 rgba(0,0,0,.25)}
+.sub{text-align:center;margin:12px 0 18px;font-size:18px;opacity:.9}
+.btn{background:var(--c,var(--sun));color:var(--ink);border:0;border-radius:18px;padding:14px 16px;font:inherit;font-size:21px;box-shadow:0 6px 0 rgba(0,0,0,.3);cursor:pointer;transition:transform .08s;width:100%}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.btn[disabled]{opacity:.5;cursor:default}
+.menu{display:grid;gap:14px}
+.row{display:flex;align-items:center;gap:12px;text-align:left}
+.row .ic{font-size:36px}.row small{display:block;font-size:15px;opacity:.75}
+.mix{font-size:26px;padding:18px}
+.best{font-size:14px;margin-left:auto;text-align:right;white-space:nowrap}
+.hud{display:flex;justify-content:space-between;align-items:center;font-size:22px;margin-bottom:6px}
+.stage{text-align:center;background:rgba(255,255,255,.12);border-radius:22px;padding:8px 12px 12px}
+.mon{font-size:68px;line-height:1.1;display:inline-block;animation:bob 1.6s ease-in-out infinite}
+.mon.hit{animation:hit .45s}
+.hpb{height:16px;background:rgba(0,0,0,.35);border-radius:9px;overflow:hidden;max-width:300px;margin:4px auto 0}
+.hpb i{display:block;height:100%;background:linear-gradient(90deg,var(--coral),var(--sun));transition:width .4s}
+.card{background:#fff;color:var(--ink);border-radius:22px;padding:16px;margin-top:12px;text-align:center}
+.cat{display:inline-block;background:var(--ink);color:#fff;border-radius:20px;padding:2px 12px;font-size:16px}
+.q{font-size:26px;margin:10px 0}.big{font-size:44px}
+.sq{display:inline-block;min-width:1.4em;border:3px dashed var(--coral);border-radius:12px;color:var(--coral)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.opt{background:#f0ebff;color:var(--ink);border:3px solid var(--grape);border-radius:16px;padding:12px 6px;font:inherit;font-size:28px;cursor:pointer;box-shadow:0 4px 0 var(--grape)}
+.opt:active{transform:translateY(3px);box-shadow:0 1px 0 var(--grape)}
+.opt:focus-visible{outline:3px solid var(--coral)}
+.opt.ok{background:var(--mint);border-color:#0b8e69;box-shadow:0 4px 0 #0b8e69}
+.opt.no{background:var(--coral);border-color:#b5243b;color:#fff;box-shadow:0 4px 0 #b5243b}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.72em;line-height:1.1;margin:0 .15em}
+.fr i{font-style:normal;padding:0 .3em}.fr i:first-child{border-bottom:.09em solid currentColor}
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;background:var(--ink);padding:2px;max-width:300px;margin:8px auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.grid b{aspect-ratio:1;background:#fff;display:block}.grid b.on{background:var(--coral)}
+.cnt{font-size:20px}
+.nl{width:100%;height:auto}
+.vt{font-family:ui-monospace,"Courier New",monospace;font-size:clamp(26px,8vw,38px);text-align:left;display:inline-block;margin:6px 0;line-height:1.25;color:var(--ink)}
+.ans{font-size:38px;min-height:58px;border:4px solid var(--grape);border-radius:16px;display:flex;align-items:center;justify-content:center;background:#f0ebff;margin:4px 0 10px;letter-spacing:2px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.pad .opt{font-size:28px;padding:10px 0}
+.hint{background:none;border:0;color:var(--grape);font:inherit;font-size:18px;text-decoration:underline;cursor:pointer;margin-top:6px}
+#fb{margin-top:12px;padding:14px;border-radius:18px;color:var(--ink);font-size:20px;text-align:left;animation:pop .25s}
+#fb.ok{background:var(--mint)}#fb.no{background:#ffb3bd}
+#fb b.t{display:block;font-size:28px;margin-bottom:4px}
+#fb .btn{margin-top:10px;background:#fff}
+.stars{font-size:64px;letter-spacing:6px}
+.res{text-align:center}.res .big{color:var(--sun)}
+.top{display:flex;justify-content:space-between;margin-bottom:4px}
+.top button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:14px;font:inherit;font-size:16px;padding:6px 12px;cursor:pointer}
+.conf{position:fixed;left:50%;top:40%;font-size:28px;pointer-events:none;animation:fly 1s ease-out forwards;z-index:9}
+.shake{animation:shake .4s}
+@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes hit{20%{transform:translateX(-14px) scale(1.2);filter:brightness(2)}50%{transform:translateX(14px)}100%{transform:none}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head>
+<body><div class="wrap" id="app"></div>
+<script>
+const $=s=>document.querySelector(s),R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[R(0,a.length-1)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+function toStr(m,e){let s=String(m);if(e>=0)return s+'0'.repeat(e);const d=-e;if(s.length<=d)s='0'.repeat(d-s.length+1)+s;return (s.slice(0,s.length-d)+'.'+s.slice(s.length-d)).replace(/0+$/,'').replace(/\.$/,'')}
+const hs=(h,k)=>k?(h/100).toFixed(2):toStr(h,-2);
+const FR=n=>`<span class="fr"><i>1</i><i>${n}</i></span>`;
+const CATS={grid:{n:'모눈종이',ic:'🟦',mon:'👾',mn:'모눈 슬라임',d:'100칸 색칠하고 읽기',c:'#5cc8ff'},line:{n:'수직선',ic:'📏',mon:'🐙',mn:'눈금 문어',d:'화살표가 가리키는 수',c:'#27d3a2'},cmp:{n:'크기 비교',ic:'⚖️',mon:'🦖',mn:'비교 공룡',d:'큰 수는 누구?',c:'#ffd23f'},shift:{n:'소수점 이동',ic:'✨',mon:'🐲',mn:'점프 드래곤',d:'10배, 100배, 1/10배…',c:'#ff8a9a'},vert:{n:'세로셈',ic:'🧮',mon:'🤖',mn:'받아올림 로봇',d:'덧셈·뺄셈 (올림·내림)',c:'#9b7bff'}};
+let mute=false,AC;
+function snd(f,d=.12,dl=0,t='square'){if(mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+dl;o.type=t;o.frequency.value=f;g.gain.setValueAtTime(.07,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g);g.connect(AC.destination);o.start(s);o.stop(s+d)}catch(e){}}
+const good=()=>{snd(660,.1);snd(880,.1,.1);snd(1320,.18,.2)},bad=()=>{snd(220,.2,0,'sawtooth');snd(160,.3,.15,'sawtooth')};
+function boom(n=22){const em=['⭐','🎉','✨','🍀','💥'];for(let i=0;i<n;i++){const e=document.createElement('span');e.className='conf';e.textContent=pick(em);e.style.setProperty('--x',R(-180,180)+'px');e.style.setProperty('--y',R(-260,120)+'px');document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}}
+const sv=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},ld=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+
+/* ---------- 문제 만들기 ---------- */
+function mc(cat,p,ans,wrongs,exp,extra=''){return{cat,type:'mc',p,extra,ans,exp,opts:shuf([ans,...wrongs.slice(0,3)])}}
+function gShift(){
+ let m=pick([R(1,99),R(100,999)]);if(m%10==0)m++;const e=pick([-2,-1,0,-1,-2]),sh=R(1,3),dir=pick([1,-1]),v=toStr(m,e),ok=dir*sh;
+ const ans=toStr(m,e+ok),cand=shuf([-3,-2,-1,0,1,2,3].filter(x=>x!=ok)).map(x=>toStr(m,e+x));
+ const n=10**sh,pr=dir>0?`${v}의 ${n}배는?`:`${v}의 ${FR(n)}배는?`;
+ const ex=dir>0?`${n}배는 소수점이 <b>오른쪽</b>으로 ${sh}칸! (0이 ${sh}개)`:`${FR(n)}배는 소수점이 <b>왼쪽</b>으로 ${sh}칸! (0이 ${sh}개)`;
+ return mc('shift',`<span class="big">${pr}</span>`,ans,cand,`${v} → <b>${ans}</b><br>${ex}`)}
+function gCmp(){
+ let t=R(0,9),a=R(1,999),b,eq=false;
+ if(t<2){a=R(1,99)*10;b=a;eq=true}else if(t<4){a=R(1,99)*10;b=a+pick([-9,-8,-5,-3,-1,1,3,5,9])}else if(t<6)b=a+pick([-10,10,-1,1]);else if(t<8){const s=String(a).padStart(3,'0');b=+(s[0]+s[2]+s[1]);if(b==a)b=a+1}else b=R(1,999);
+ b=Math.min(999,Math.max(1,b));if(!eq&&a==b)b=a+1;
+ const ans=a>b?'&gt;':a<b?'&lt;':'=',sa=hs(a),sb=hs(b,eq);
+ const ex=eq?`${sa} = ${sb} 소수 끝의 0은 있어도 없어도 같은 수예요.`:`자연수 → 소수 첫째 자리 → 소수 둘째 자리 순서로 비교! ${sa} ${ans} ${sb}`;
+ const q=mc('cmp',`<div class="q">알맞은 기호를 골라요</div><span class="big">${sa} <b class="sq">?</b> ${sb}</span>`,ans,['&gt;','&lt;','='].filter(x=>x!=ans),ex);q.opts=['&gt;','&lt;','='];return q}
+function gLine(){
+ const tenth=Math.random()<.5,start=tenth?100*R(0,4):10*R(1,40),step=tenth?10:1,p=R(1,9),v=start+p*step;
+ const X=i=>40+i*52;let s='<svg viewBox="0 0 600 150" class="nl" role="img" aria-label="수직선"><line x1="30" y1="90" x2="570" y2="90" stroke="#2a1a68" stroke-width="5" stroke-linecap="round"/>';
+ for(let i=0;i<=10;i++){const m=i%5==0;s+=`<line x1="${X(i)}" y1="${m?74:80}" x2="${X(i)}" y2="${m?106:100}" stroke="#2a1a68" stroke-width="${m?4:3}"/>`}
+ [0,5,10].forEach(i=>s+=`<text x="${X(i)}" y="136" text-anchor="middle" font-size="26" fill="#2a1a68">${hs(start+i*step)}</text>`);
+ s+=`<path d="M${X(p)} 84 l-13 -26 h26z" fill="#ff5d73"/><rect x="${X(p)-22}" y="12" width="44" height="42" rx="10" fill="#ffd23f"/><text x="${X(p)}" y="44" text-anchor="middle" font-size="28" fill="#2a1a68">?</text></svg>`;
+ const set=new Set([start+(10-p)*step,v+step,v-step,v+2*step,v-2*step].filter(x=>x>0&&x!=v));
+ const w=[...set];
+ return mc('line','<div class="q">화살표가 가리키는 수는?</div>',hs(v),shuf(w).map(x=>hs(x)),`눈금 한 칸은 <b>${hs(step)}</b>! ${hs(start)}에서 ${p}칸 가면 <b>${hs(v)}</b>`,s)}
+function gGrid(){
+ const h=R(1,99);
+ if(Math.random()<.5)return{cat:'grid',type:'paint',h,p:`<div class="q">전체 100칸이 1이에요.</div><span class="big">${hs(h,true)}</span><div class="q">만큼 색칠해요!</div>`,exp:`100칸 중 ${h}칸 = ${FR(100)}의 ${h}배 = <b>${hs(h,true)}</b>`};
+ const rev=+(String(h).padStart(2,'0')[1]+String(h).padStart(2,'0')[0]),ans=hs(h,true);
+ const c=[...new Set([hs(rev,true),toStr(h,-3),hs(h*10,true).replace(/\.?0+$/,m=>m),hs(h+10,true),hs(h-10,true),hs(h+1,true),hs(h-1,true)].filter(x=>x!=ans&&+x>0&&+x<10))];
+ const cells=Array.from({length:100},(_,i)=>`<b class="${i<h?'on':''}"></b>`).join('');
+ return mc('grid','<div class="q">색칠한 부분은 얼마일까요?</div>',ans,c,`색칠한 칸이 ${h}칸이니까 ${FR(100)}의 ${h}배 = <b>${ans}</b>`,`<div class="grid" style="touch-action:auto">${cells}</div>`)}
+function carries(a,b,sub){let c=0,n=0;while(a>0||b>0){let x=a%10,y=b%10;if(sub){if(x-c<y){c=1;n++}else c=0}else{if(x+y+c>=10){c=1;n++}else c=0}a=Math.floor(a/10);b=Math.floor(b/10)}return n}
+function gVert(){
+ const add=Math.random()<.5;let a=R(101,899),b=R(101,899);
+ if(a%100==0)a+=R(1,9)*10;if(Math.random()<.3)a=Math.round(a/10)*10;
+ if(!add){a=R(300,999);b=R(11,a-10);if(a%100==0)a+=7}
+ const r=add?a+b:a-b,op=add?'+':'−',pr=h=>{const [i,f='']=hs(h).split('.');return[i,f]};
+ const P=[pr(a),pr(b),pr(r)],wi=Math.max(...P.map(x=>x[0].length));
+ const ln=(o,p)=>o+' '+p[0].padStart(wi)+(p[1]?'.':' ')+p[1].padEnd(2);
+ const n=carries(a,b,!add),w=add?'받아올림':'받아내림';
+ return{cat:'vert',type:'num',r,p:`<div class="q">세로셈으로 계산해요</div><pre class="vt">${ln(' ',P[0])}\n${ln(op,P[1])}\n${'─'.repeat(wi+5)}</pre>`,
+  hint:`소수점의 위치를 맞춰 쓰고, 오른쪽 끝(소수 둘째 자리)부터! ${w}은 <b>${n}번</b> 있어요.`,exp:`${hs(a)} ${op} ${hs(b)} = <b>${hs(r)}</b> (${w} ${n}번)`}}
+const GEN={grid:gGrid,line:gLine,cmp:gCmp,shift:gShift,vert:gVert};
+
+/* ---------- 게임 흐름 ---------- */
+let S;
+function menu(){
+ const best=k=>ld('sosu-'+k);
+ $('#app').innerHTML=`<h1>소수 대모험</h1><p class="sub">몬스터 10문제를 맞혀서 물리치자! 하트는 3개 ❤️</p><div class="menu"><button class="btn mix" data-m="mix">🎮 전체 도전! 대마왕 👹${best('mix')?`<small class="best">최고 ${best('mix')}점</small>`:''}</button>${Object.entries(CATS).map(([k,c])=>`<button class="btn row" style="--c:${c.c}" data-m="${k}"><span class="ic">${c.ic}</span><span>${c.n}<small>${c.d}</small></span>${best(k)?`<span class="best">최고<br>${best(k)}점</span>`:''}</button>`).join('')}<button class="btn" style="--c:#fff" id="mt">${mute?'🔇 소리 꺼짐':'🔊 소리 켜짐'}</button></div>`;
+ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m));
+ $('#mt').onclick=()=>{mute=!mute;menu()}}
+function start(m){const ks=Object.keys(CATS);S={m,q:m=='mix'?shuf([...ks,...ks]):Array(10).fill(m),i:0,hearts:3,score:0,combo:0,ok:0,max:0,lock:false,buf:''};next()}
+function next(){if(S.i>=10||S.hearts<=0)return result();S.cur=GEN[S.q[S.i]]();S.lock=false;S.buf='';draw()}
+function draw(){
+ const c=S.cur,cc=CATS[c.cat],mix=S.m=='mix';
+ $('#app').innerHTML=`<div class="top"><button id="bk">← 메뉴</button><span>${S.i+1} / 10</span></div>
+ <div class="hud"><span id="hr">${'❤️'.repeat(S.hearts)}${'🖤'.repeat(3-S.hearts)}</span><span>⭐ ${S.score}</span><span>${S.combo>1?'🔥 '+S.combo+'콤보':''}</span></div>
+ <div class="stage"><span class="mon" id="mon">${mix?'👹':cc.mon}</span><div>${mix?'소수 대마왕':cc.mn}</div><div class="hpb"><i style="width:${(10-S.ok)*10}%"></i></div></div>
+ <div class="card"><span class="cat">${cc.ic} ${cc.n}</span>${c.p}<div id="body"></div><div id="fb" hidden></div></div>`;
+ $('#bk').onclick=menu;const B=$('#body');
+ if(c.type=='mc'){B.innerHTML=c.extra+`<div class="opts">${c.opts.map(o=>`<button class="opt" data-v="${o}">${o}</button>`).join('')}</div>`;
+  B.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(S.lock)return;const ok=b.dataset.v==c.ans.replace(/&gt;/g,'>').replace(/&lt;/g,'<')||b.innerHTML==c.ans;b.classList.add(ok?'ok':'no');if(!ok)B.querySelectorAll('.opt').forEach(x=>{if(x.innerHTML==c.ans||x.dataset.v==c.ans)x.classList.add('ok')});done(ok)})}
+ if(c.type=='paint'){B.innerHTML=`<div class="grid" id="g">${'<b></b>'.repeat(100)}</div><div class="cnt">칠한 칸 <b id="n">0</b> / 100</div><button class="btn" id="chk" style="--c:#ffd23f;margin-top:8px">확인!</button>`;
+  const g=$('#g'),cells=[...g.children];let dn=false,val=true;const cnt=()=>$('#n').textContent=cells.filter(x=>x.classList.contains('on')).length;
+  const set=el=>{if(el&&el.parentNode===g){el.classList.toggle('on',val);cnt()}};
+  g.onpointerdown=e=>{if(S.lock)return;const t=e.target;if(t.parentNode!==g)return;dn=true;val=!t.classList.contains('on');set(t);e.preventDefault()};
+  g.onpointermove=e=>{if(dn&&!S.lock)set(document.elementFromPoint(e.clientX,e.clientY))};
+  window.onpointerup=window.onpointercancel=()=>dn=false;
+  $('#chk').onclick=()=>{if(S.lock)return;const n=cells.filter(x=>x.classList.contains('on')).length;done(n==c.h,n==c.h?'':`칠한 칸은 ${n}칸이었어요. `)}}
+ if(c.type=='num'){B.innerHTML=`<div class="ans" id="av">□</div><div class="pad">${['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(k=>`<button class="opt" data-k="${k}">${k}</button>`).join('')}</div><button class="btn" id="chk" style="--c:#ffd23f">확인!</button><br><button class="hint" id="ht">💡 힌트</button><div id="hx"></div>`;
+  B.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>key(b.dataset.k));$('#chk').onclick=submit;$('#ht').onclick=()=>$('#hx').innerHTML=`<p>${c.hint}</p>`}}
+function key(k){if(S.lock||S.cur.type!='num')return;if(k=='⌫'||k=='Backspace')S.buf=S.buf.slice(0,-1);else if(k=='.'){if(!S.buf.includes('.')&&S.buf)S.buf+='.'}else if(/^\d$/.test(k)&&S.buf.length<7)S.buf+=k;$('#av').textContent=S.buf||'□'}
+function submit(){if(S.lock||!S.buf)return;const v=Math.round(parseFloat(S.buf)*100);done(v===S.cur.r)}
+document.addEventListener('keydown',e=>{if(!S||!S.cur||S.cur.type!='num')return;if(e.key=='Enter'){submit();e.preventDefault()}else if(/^[0-9.]$|^Backspace$/.test(e.key))key(e.key)});
+function done(ok,pre=''){
+ S.lock=true;const c=S.cur,mon=$('#mon'),fb=$('#fb');
+ if(ok){S.ok++;S.combo++;S.max=Math.max(S.max,S.combo);S.score+=100+Math.min(S.combo-1,5)*30;good();mon.classList.add('hit');if(S.combo>=3||S.ok==10)boom()}
+ else{S.hearts--;S.combo=0;bad();$('.card').classList.add('shake')}
+ const msg=ok?pick(['정답! 대단해요! 🎉','딩동댕! 💥','와, 완벽해요! ⭐','몬스터가 휘청! 😵']):pick(['아쉬워요! 다시 힘내요 💪','앗, 하트가 깨졌어요 💔','괜찮아요, 설명을 읽어봐요 📖']);
+ fb.className=ok?'ok':'no';fb.hidden=false;fb.innerHTML=`<b class="t">${msg}</b>${pre}${c.exp}<button class="btn" id="nx">${S.i>=9||S.hearts<=0?'결과 보기 🏁':'다음 문제 ▶'}</button>`;
+ $('#hr').textContent='❤️'.repeat(S.hearts)+'🖤'.repeat(3-S.hearts);
+ $('#nx').onclick=()=>{S.i++;next()};$('#nx').focus();fb.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function result(){
+ const dead=S.hearts<=0,st=dead?0:S.ok>=10?3:S.ok>=8?2:S.ok>=6?1:0,win=!dead&&S.ok>=8;
+ const bk='sosu-'+S.m;if(S.score>(+ld(bk)||0))sv(bk,S.score);if(win)boom(40);
+ $('#app').innerHTML=`<div class="card res" style="margin-top:30px"><div style="font-size:80px">${win?'🏆':dead?'😵':'💨'}</div><div class="q" style="font-size:30px">${dead?'하트가 다 떨어졌어요!':win?'몬스터 처치 성공!':'몬스터가 도망쳤어요…'}</div><div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p class="q">맞힌 문제 <b>${S.ok}</b> / 10<br>최고 콤보 🔥 ${S.max}<br>점수 <span class="big">${S.score}</span></p><button class="btn" id="rt">🔁 한 번 더!</button><br><br><button class="btn" id="mn" style="--c:#9b7bff">🏠 메뉴로</button></div>`;
+ $('#rt').onclick=()=>start(S.m);$('#mn').onclick=menu}
+menu();
+</script></body></html>
